@@ -50,6 +50,13 @@ dongle = unifying_dongle()
 logging.info("Initializing firmware update")
 response = dongle.send_command(0x21, 0x09, 0x0200, 0x0000, b"\x80" + b"\x00"*31)
 
+#Check bootloader version
+response = dongle.send_command(0x21, 0x09, 0x0200, 0x0000, b"\x90" + b"\x00"*31)
+bootloader_ver = str(response[4:18], 'utf-8')
+if int (response[11:12]) > 3:
+  print ("Bootloader version " + bootloader_ver + " cannot be flashed!!!")
+  sys.exit(1)
+
 # # Clear the existing flash memory up to the size of the new firmware image
 logging.info("Clearing existing flash memory up to boootloader")
 for x in range(0, 0x70, 2):
