@@ -43,5 +43,18 @@ with open(path, 'wb') as f:
   for value in data:
     f.write(bytes([value]))
 
+#Check firmware version
+response = dongle.send_command(0x21, 0x09, 0x0200, 0x0000, b"\x50" + b"\x00"*31)
+firmware_ver = str(response[4:18], 'utf-8')
+print ("\nFirmware version " + firmware_ver +"\n")
+
+#Check bootloader version
+response = dongle.send_command(0x21, 0x09, 0x0200, 0x0000, b"\x90" + b"\x00"*31)
+bootloader_ver = str(response[4:18], 'utf-8')
+if int (response[11:12]) > 3:
+  print ("\nBootloader version " + bootloader_ver + " cannot be flashed!!!")
+else:
+  print ("\nBootloader version " + bootloader_ver)
+
 # restart dongle
 #response = dongle.send_command(0x21, 0x09, 0x0200, 0x0000, b"\x70" + b"\x00"*31)
